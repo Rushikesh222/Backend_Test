@@ -1,15 +1,22 @@
 const express = require('express');
 const app = express();
-
+const cors = require('cors');
 const authRoutes = require('./src/routes/auth.routes');
-// const accountRoutes = require('./src/routes/account.routes');
-// const transactionRoutes = require('./src/routes/transaction.routes');
+
 
 app.use(express.json());
-// app.use(cookieParser())
+
+const allowedOrigin = process.env.CORS_ORIGIN || '*';
+app.use(cors({
+	origin: allowedOrigin,
+	credentials: true,
+	methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+	allowedHeaders: ['Content-Type','Authorization']
+}));
     
+
+
 app.use('/api/auth', authRoutes);
-// app.use('/api/accounts', accountRoutes);
-// app.use('/api/transactions', transactionRoutes);``
+
 
 module.exports = app;
