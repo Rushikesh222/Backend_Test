@@ -8,15 +8,15 @@ const jwt = require('jsonwebtoken');
 
 const userRegisterController = async (req, res) => {
   try {
-    const { email, password, name } = req.body;
+    const { email, password, name, role } = req.body;
     const existingUser = await userModel.findOne({ email });
     if (existingUser) {
       return res.status(422).json({ message: 'Email already exists', status:"failed"});
     }
-    const newUser = await userModel.create({ email, password, name });
+    const newUser = await userModel.create({ email, password, name, role });
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
     res.cookie('token', token);
-    res.status(201).json({ message: 'User registered successfully', data: { id: newUser._id, email: newUser.email, name: newUser.name }, status: "success", token });
+    res.status(201).json({ message: 'User registered successfully', data: { id: newUser._id, email: newUser.email, name: newUser.name, role: newUser.role }, status: "success", token });
   } catch (error) {
     console.error('Error registering user:', error);
     res.status(500).json({ message: 'Server error' });

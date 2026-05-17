@@ -22,6 +22,11 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Name is required'],
     trim: true
   },
+   role: {
+    type: String,
+    enum: ["organizer", "customer"],
+    default: "customer"
+  }
 
 }, { timestamps: true });
 

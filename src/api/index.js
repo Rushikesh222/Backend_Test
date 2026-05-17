@@ -1,14 +1,30 @@
-require("dotenv").config();
-const app = require("../server"); // Your Express app
-const mongoose = require("mongoose");
-const connectDB = require("../src/config/db");
+const express = require('express');
+const app = express();
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
+const authRoutes = require('../routes/auth.routes');
+const eventRoutes = require('../routes/event.routes');
+const bookingRoutes = require('../routes/booking.routes');
 
 
-module.exports = async (req, res) => {
-  try {
-    await connectDB(); // Ensure DB is connected
-    app(req, res);     // Pass request to Express app
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-};
+
+app.use(express.json());
+
+const allowedOrigin = process.env.CORS_ORIGIN || '*';
+app.use(cors({
+	origin: allowedOrigin,
+	credentials: true,
+	methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+	allowedHeaders: ['Content-Type','Authorization']
+}));
+    
+
+
+app.use('/api/auth', authRoutes);
+app.use('/api/events', eventRoutes);
+app.use('/api/booking', bookingRoutes);
+
+
+module.exports = app;
